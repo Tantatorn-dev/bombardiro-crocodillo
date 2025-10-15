@@ -4,6 +4,9 @@ use bevy::prelude::*;
 pub struct Player;
 
 #[derive(Component)]
+pub struct PlayerBullet;
+
+#[derive(Component)]
 pub struct AnimationIndices {
     first: usize,
     last: usize,
@@ -87,6 +90,26 @@ pub fn control(
             let speed = 300.0;
             transform.translation.x += direction.x * speed * time.delta_secs();
             transform.translation.y += direction.y * speed * time.delta_secs();
+        }
+    }
+}
+
+pub fn shoot(
+    mut commands: Commands,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut query: Query<&mut Transform, With<Player>>,
+) {
+    if keyboard_input.just_pressed(KeyCode::Space) {
+        for transform in &mut query {
+            let mut _transform = transform.clone();
+
+            _transform.translation.x += 60.0;
+            _transform.translation.y += 40.0;
+
+            commands.spawn((
+                _transform,
+                PlayerBullet,
+            ));
         }
     }
 }
