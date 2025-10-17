@@ -4,9 +4,6 @@ use bevy::prelude::*;
 pub struct Player;
 
 #[derive(Component)]
-pub struct PlayerBullet;
-
-#[derive(Component)]
 pub struct AnimationIndices {
     first: usize,
     last: usize,
@@ -97,18 +94,23 @@ pub fn control(
 pub fn shoot(
     mut commands: Commands,
     keyboard_input: Res<ButtonInput<KeyCode>>,
+    asset_server: Res<AssetServer>,
     mut query: Query<&mut Transform, With<Player>>,
 ) {
     if keyboard_input.just_pressed(KeyCode::Space) {
         for transform in &mut query {
-            let mut _transform = transform.clone();
+            let mut bullet_transform = transform.clone();
+            bullet_transform.translation.x += 60.0;
+            bullet_transform.translation.y += 40.0;
 
-            _transform.translation.x += 60.0;
-            _transform.translation.y += 40.0;
+            let texture = asset_server.load("bullet.png");
+            let sprite = Sprite::from_image(texture);
 
             commands.spawn((
-                _transform,
-                PlayerBullet,
+                sprite,
+                bullet_transform,
+                crate::bullet::BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
+                crate::bullet::Bullet,
             ));
         }
     }
