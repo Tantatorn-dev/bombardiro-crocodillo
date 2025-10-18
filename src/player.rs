@@ -1,4 +1,4 @@
-use crate::bullet::{Bullet, BulletTimer};
+use crate::bullet::{Bullet, BulletTimer, BulletDamage};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -111,6 +111,7 @@ pub fn shoot(
                 sprite,
                 bullet_transform,
                 BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
+                BulletDamage(1),
                 Bullet,
             ));
         }
