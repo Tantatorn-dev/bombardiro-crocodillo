@@ -17,6 +17,7 @@ fn main() {
             Update,
             (
                 player::animate,
+                background::animate,
                 player::control,
                 player::shoot,
                 bullet::fly,
