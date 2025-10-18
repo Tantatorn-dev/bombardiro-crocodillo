@@ -11,7 +11,7 @@ fn main() {
         .add_systems(Startup, (setup, player::setup, background::setup, enemy::setup))
         .add_systems(
             Update,
-            (player::animate, player::control, player::shoot, bullet::fly),
+            (player::animate, player::control, player::shoot, bullet::fly, enemy::animate),
         )
         .run();
 }
