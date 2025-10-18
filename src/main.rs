@@ -3,11 +3,12 @@ use bevy::prelude::*;
 mod background;
 mod bullet;
 mod player;
+mod enemy;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, (setup, player::setup, background::setup))
+        .add_systems(Startup, (setup, player::setup, background::setup, enemy::setup))
         .add_systems(
             Update,
             (player::animate, player::control, player::shoot, bullet::fly),
