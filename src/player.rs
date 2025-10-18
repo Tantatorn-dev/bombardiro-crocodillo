@@ -1,3 +1,4 @@
+use crate::bullet::{Bullet, BulletTimer, BulletDamage};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -17,7 +18,7 @@ pub fn setup(
     asset_server: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    let texture = asset_server.load("bombardiro.png");
+    let texture = asset_server.load("mobs/bombardiro.png");
     let layout = TextureAtlasLayout::from_grid(UVec2::splat(256), 4, 1, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     // Use only the subset of sprites in the sheet that make up the run animation
@@ -103,14 +104,15 @@ pub fn shoot(
             bullet_transform.translation.x += 60.0;
             bullet_transform.translation.y += 40.0;
 
-            let texture = asset_server.load("bullet.png");
+            let texture = asset_server.load("particles/bullet.png");
             let sprite = Sprite::from_image(texture);
 
             commands.spawn((
                 sprite,
                 bullet_transform,
-                crate::bullet::BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
-                crate::bullet::Bullet,
+                BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
+                BulletDamage(1),
+                Bullet,
             ));
         }
     }

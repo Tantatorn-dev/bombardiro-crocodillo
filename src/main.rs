@@ -2,15 +2,30 @@ use bevy::prelude::*;
 
 mod background;
 mod bullet;
+mod enemy;
 mod player;
+mod spawn;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, (setup, player::setup, background::setup))
+        .add_systems(
+            Startup,
+            (setup, player::setup, background::setup, spawn::setup),
+        )
         .add_systems(
             Update,
-            (player::animate, player::control, player::shoot, bullet::fly),
+            (
+                player::animate,
+                player::control,
+                player::shoot,
+                bullet::fly,
+                bullet::collide,
+                spawn::spawn,
+                enemy::animate,
+                enemy::damaged,
+                enemy::despawn,
+            ),
         )
         .run();
 }
