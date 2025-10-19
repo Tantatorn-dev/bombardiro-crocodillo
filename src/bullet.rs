@@ -23,6 +23,7 @@ pub fn collide(
     mut commands: Commands,
     mut bullet_query: Query<(Entity, &Transform, &BulletDamage), With<Bullet>>,
     mut enemy_query: Query<(Entity, &Transform, &mut EnemyHealth), With<Enemy>>,
+    asset_server: Res<AssetServer>,
 ) {
     for (bullet_entity, bullet_transform, bullet_damage) in &mut bullet_query {
         for (enemy_entity, enemy_transform, mut enemy_health) in &mut enemy_query {
@@ -37,12 +38,9 @@ pub fn collide(
                 // Decrease enemy health
                 enemy_health.0 = enemy_health.0.saturating_sub(bullet_damage.0);
 
-                commands
-                    .entity(enemy_entity)
-                    .insert(DamageCountdownTimer(Timer::from_seconds(
-                        1.0,
-                        TimerMode::Once,
-                    )));
+                commands.entity(enemy_entity).insert(DamageCountdownTimer(Timer::from_seconds(1.0, TimerMode::Once)));
+
+                commands.spawn(AudioPlayer::new(asset_server.load("audio/fx/hit.ogg")));
 
                 break;
             }
