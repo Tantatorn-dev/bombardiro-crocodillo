@@ -55,6 +55,7 @@ pub fn damaged(
         damage_timer.tick(time.delta());
         if damage_timer.just_finished() {
             commands.entity(entity).remove::<DamageCountdownTimer>();
+            commands.entity(entity).remove::<AudioPlayer>();
             sprite.color = Color::WHITE;
         }
     }
