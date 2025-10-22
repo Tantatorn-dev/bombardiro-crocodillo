@@ -90,16 +90,16 @@ pub fn control(
     for mut transform in &mut query {
         let mut direction = Vec2::ZERO;
 
-        if keyboard_input.pressed(KeyCode::ArrowLeft) {
+        if keyboard_input.pressed(KeyCode::ArrowLeft) || keyboard_input.pressed(KeyCode::KeyA) {
             direction.x -= 1.0;
         }
-        if keyboard_input.pressed(KeyCode::ArrowRight) {
+        if keyboard_input.pressed(KeyCode::ArrowRight) || keyboard_input.pressed(KeyCode::KeyD) {
             direction.x += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::ArrowUp) {
+        if keyboard_input.pressed(KeyCode::ArrowUp) || keyboard_input.pressed(KeyCode::KeyW) {
             direction.y += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::ArrowDown) {
+        if keyboard_input.pressed(KeyCode::ArrowDown) || keyboard_input.pressed(KeyCode::KeyS) {
             direction.y -= 1.0;
         }
 
