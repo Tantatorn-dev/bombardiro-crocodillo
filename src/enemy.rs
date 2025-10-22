@@ -1,4 +1,7 @@
 use bevy::prelude::*;
+use rand::Rng;
+
+use crate::bullet::{Bullet, BulletMovement, BulletTimer};
 
 use crate::player::PlayerStatus;
 
@@ -6,7 +9,10 @@ use crate::player::PlayerStatus;
 pub struct Enemy;
 
 #[derive(Component, Deref, DerefMut)]
-pub struct EnemyTimer(pub Timer);
+pub struct MoveTimer(pub Timer);
+
+#[derive(Component, Deref, DerefMut)]
+pub struct AttackTimer(pub Timer);
 
 #[derive(Component, Deref, DerefMut)]
 pub struct DamageCountdownTimer(pub Timer);
@@ -29,7 +35,8 @@ pub fn spawn_enemy(
         .spawn((
             sprite,
             Transform::from_translation(position).with_scale(Vec3::splat(0.1)),
-            EnemyTimer(Timer::from_seconds(0.05, TimerMode::Repeating)),
+            MoveTimer(Timer::from_seconds(0.05, TimerMode::Repeating)),
+            AttackTimer(Timer::from_seconds(3., TimerMode::Repeating)),
             EnemyHealth(5),
             OriginalPosition(position),
             Enemy,
@@ -39,7 +46,7 @@ pub fn spawn_enemy(
 
 pub fn animate(
     time: Res<Time>,
-    mut query: Query<(&mut Transform, &mut EnemyTimer, &OriginalPosition), With<Enemy>>,
+    mut query: Query<(&mut Transform, &mut MoveTimer, &OriginalPosition), With<Enemy>>,
 ) {
     for (mut transform, mut timer, original_position) in &mut query {
         timer.tick(time.delta());
@@ -78,6 +85,31 @@ pub fn despawn(
             if let Ok(mut player_status) = player_query.single_mut() {
                 println!("Enemy defeated! +10 score.");
                 player_status.score += 10;
+            }
+        }
+    }
+}
+
+pub fn attack(
+    time: Res<Time>,
+    mut commands: Commands,
+    mut query: Query<(&Transform, &mut AttackTimer), With<Enemy>>,
+    asset_server: Res<AssetServer>,
+) {
+    for (transform, mut timer) in &mut query {
+        timer.tick(time.delta());
+        if timer.finished() {
+            let mut rng = rand::rng();
+
+            if rng.random_bool(0.5) {
+                commands.spawn((
+                    Sprite::from_image(asset_server.load("particles/banana.png")),
+                    Transform::from_translation(transform.translation)
+                        .with_scale(Vec3::splat(0.05)),
+                    BulletTimer(Timer::from_seconds(0.02, TimerMode::Repeating)),
+                    BulletMovement(|position| position + Vec3::new(-5.0, 0.0, 0.0)),
+                    Bullet,
+                ));
             }
         }
     }

@@ -1,4 +1,4 @@
-use crate::bullet::{Bullet, BulletDamage, BulletTimer};
+use crate::bullet::{Bullet, BulletDamage, BulletMovement, BulletTimer};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -130,9 +130,10 @@ pub fn shoot(
             commands.spawn((
                 sprite,
                 bullet_transform,
+                AudioPlayer::new(asset_server.load("audio/fx/blaster.ogg")),
                 BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
                 BulletDamage(1),
-                AudioPlayer::new(asset_server.load("audio/fx/blaster.ogg")),
+                BulletMovement(|position| position + Vec3::new(7.5, 0.0, 0.0)),
                 Bullet,
             ));
         }

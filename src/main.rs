@@ -34,6 +34,7 @@ fn main() {
                 enemy::damaged,
                 enemy::despawn,
                 hud::update,
+                enemy::attack,
             ),
         )
         .run();

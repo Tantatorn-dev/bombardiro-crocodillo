@@ -10,11 +10,14 @@ pub struct BulletTimer(pub Timer);
 #[derive(Component)]
 pub struct BulletDamage(pub u32);
 
-pub fn fly(time: Res<Time>, mut query: Query<(&mut BulletTimer, &mut Transform), With<Bullet>>) {
-    for (mut timer, mut transform) in &mut query {
+#[derive(Component)]
+pub struct BulletMovement(pub fn(Vec3) -> Vec3);
+
+pub fn fly(time: Res<Time>, mut query: Query<(&mut BulletTimer, &mut Transform, &BulletMovement), With<Bullet>>) {
+    for (mut timer, mut transform, movement) in &mut query {
         timer.tick(time.delta());
         if timer.just_finished() {
-            transform.translation.x += 7.5;
+            transform.translation = (movement.0)(transform.translation);
         }
     }
 }
@@ -38,9 +41,10 @@ pub fn collide(
                 // Decrease enemy health
                 enemy_health.0 = enemy_health.0.saturating_sub(bullet_damage.0);
 
-                commands.entity(enemy_entity).insert(DamageCountdownTimer(Timer::from_seconds(1.0, TimerMode::Once)));
-
-                commands.spawn(AudioPlayer::new(asset_server.load("audio/fx/hit.ogg")));
+                commands.entity(enemy_entity).insert((
+                    DamageCountdownTimer(Timer::from_seconds(1.0, TimerMode::Once)),
+                    AudioPlayer::new(asset_server.load("audio/fx/hit.ogg")),
+                ));
 
                 break;
             }
