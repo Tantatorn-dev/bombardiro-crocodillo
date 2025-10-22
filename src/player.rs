@@ -5,6 +5,21 @@ use bevy::prelude::*;
 pub struct Player;
 
 #[derive(Component)]
+pub struct PlayerStatus {
+    pub health: u32,
+    pub score: u32,
+    pub ammo: PlayerAmmo,
+}
+
+const MAX_HEALTH: u32 = 10;
+
+enum PlayerAmmo {
+    Standard,
+    Spread,
+    Explosive,
+}
+
+#[derive(Component)]
 pub struct AnimationIndices {
     first: usize,
     last: usize,
@@ -39,6 +54,11 @@ pub fn setup(
         Transform::from_xyz(-520., 0., 0.).with_scale(Vec3::splat(0.5)),
         animation_indices,
         AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        PlayerStatus {
+            health: MAX_HEALTH,
+            score: 0,
+            ammo: PlayerAmmo::Standard,
+        },
         Player,
     ));
 }

@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::player::PlayerStatus;
+
 #[derive(Component)]
 pub struct Enemy;
 
@@ -35,12 +37,16 @@ pub fn spawn_enemy(
         .id()
 }
 
-pub fn animate(time: Res<Time>, mut query: Query<(&mut Transform, &mut EnemyTimer, &OriginalPosition), With<Enemy>>) {
+pub fn animate(
+    time: Res<Time>,
+    mut query: Query<(&mut Transform, &mut EnemyTimer, &OriginalPosition), With<Enemy>>,
+) {
     for (mut transform, mut timer, original_position) in &mut query {
         timer.tick(time.delta());
         if timer.just_finished() {
             transform.translation.x -= 5.2;
-            transform.translation.y = original_position.0.y + (transform.translation.x / 30.).sin() * 120.;
+            transform.translation.y =
+                original_position.0.y + (transform.translation.x / 30.).sin() * 120.;
         }
     }
 }
@@ -61,10 +67,18 @@ pub fn damaged(
     }
 }
 
-pub fn despawn(mut commands: Commands, mut query: Query<(Entity, &EnemyHealth), With<Enemy>>) {
+pub fn despawn(
+    mut commands: Commands,
+    mut query: Query<(Entity, &EnemyHealth), With<Enemy>>,
+    mut player_query: Query<&mut PlayerStatus>,
+) {
     for (entity, health) in &mut query {
         if health.0 == 0 {
             commands.entity(entity).despawn();
+            if let Ok(mut player_status) = player_query.single_mut() {
+                println!("Enemy defeated! +10 score.");
+                player_status.score += 10;
+            }
         }
     }
 }

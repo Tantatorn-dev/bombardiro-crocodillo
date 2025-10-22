@@ -3,6 +3,7 @@ use bevy::prelude::*;
 mod background;
 mod bullet;
 mod enemy;
+mod hud;
 mod player;
 mod spawn;
 
@@ -11,7 +12,13 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_systems(
             Startup,
-            (setup, player::setup, background::setup, spawn::setup),
+            (
+                setup,
+                player::setup,
+                background::setup,
+                spawn::setup,
+                hud::setup,
+            ),
         )
         .add_systems(
             Update,
@@ -26,6 +33,7 @@ fn main() {
                 enemy::animate,
                 enemy::damaged,
                 enemy::despawn,
+                hud::update,
             ),
         )
         .run();
