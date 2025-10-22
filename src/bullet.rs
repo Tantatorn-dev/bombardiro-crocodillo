@@ -11,13 +11,13 @@ pub struct BulletTimer(pub Timer);
 pub struct BulletDamage(pub u32);
 
 #[derive(Component)]
-pub struct BulletMovement(pub fn(Vec3) -> Vec3);
+pub struct BulletMovement(pub fn(Transform) -> Transform);
 
 pub fn fly(time: Res<Time>, mut query: Query<(&mut BulletTimer, &mut Transform, &BulletMovement), With<Bullet>>) {
     for (mut timer, mut transform, movement) in &mut query {
         timer.tick(time.delta());
         if timer.just_finished() {
-            transform.translation = (movement.0)(transform.translation);
+            *transform = (movement.0)(*transform);
         }
     }
 }

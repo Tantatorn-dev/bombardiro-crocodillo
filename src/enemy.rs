@@ -107,7 +107,16 @@ pub fn attack(
                     Transform::from_translation(transform.translation)
                         .with_scale(Vec3::splat(0.05)),
                     BulletTimer(Timer::from_seconds(0.02, TimerMode::Repeating)),
-                    BulletMovement(|position| position + Vec3::new(-5.0, 0.0, 0.0)),
+                    BulletMovement(|transform| {
+                        let mut new_transform = transform;
+                        new_transform.translation.x -= 5.0;
+
+                        new_transform.rotate(
+                            Quat::from_rotation_z(-0.2)
+                        ); 
+
+                        new_transform
+                    }),
                     Bullet,
                 ));
             }
