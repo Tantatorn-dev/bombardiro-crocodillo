@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::bullet::{Bullet, BulletMovement, BulletTimer};
+use crate::bullet::{Bullet, BulletTimer, BulletOwner};
 
 use crate::player::PlayerStatus;
 
@@ -83,7 +83,6 @@ pub fn despawn(
         if health.0 == 0 {
             commands.entity(entity).despawn();
             if let Ok(mut player_status) = player_query.single_mut() {
-                println!("Enemy defeated! +10 score.");
                 player_status.score += 10;
             }
         }
@@ -107,17 +106,18 @@ pub fn attack(
                     Transform::from_translation(transform.translation)
                         .with_scale(Vec3::splat(0.05)),
                     BulletTimer(Timer::from_seconds(0.02, TimerMode::Repeating)),
-                    BulletMovement(|transform| {
-                        let mut new_transform = transform;
-                        new_transform.translation.x -= 5.0;
+                    Bullet {
+                        owner: BulletOwner::Enemy,
+                        damage: 1,
+                        movement: |transform| {
+                            let mut new_transform = transform;
+                            new_transform.translation.x -= 5.0;
 
-                        new_transform.rotate(
-                            Quat::from_rotation_z(-0.2)
-                        ); 
+                            new_transform.rotate(Quat::from_rotation_z(-0.2));
 
-                        new_transform
-                    }),
-                    Bullet,
+                            new_transform
+                        },
+                    },
                 ));
             }
         }

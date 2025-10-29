@@ -1,4 +1,4 @@
-use crate::bullet::{Bullet, BulletDamage, BulletMovement, BulletTimer};
+use crate::bullet::{Bullet, BulletTimer, BulletOwner};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -132,13 +132,15 @@ pub fn shoot(
                 bullet_transform,
                 AudioPlayer::new(asset_server.load("audio/fx/blaster.ogg")),
                 BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
-                BulletDamage(1),
-                BulletMovement(|transform| {
-                    let mut new_transform = transform;
-                    new_transform.translation.x += 7.5;
-                    new_transform
-                }),
-                Bullet,
+                Bullet {
+                    owner: BulletOwner::Enemy,
+                    movement: |transform| {
+                        let mut new_transform = transform;
+                        new_transform.translation.x += 7.5;
+                        new_transform
+                    },
+                    damage: 1,
+                },
             ));
         }
     }
