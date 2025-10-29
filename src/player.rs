@@ -133,7 +133,7 @@ pub fn shoot(
                 AudioPlayer::new(asset_server.load("audio/fx/blaster.ogg")),
                 BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
                 Bullet {
-                    owner: BulletOwner::Enemy,
+                    owner: BulletOwner::Player,
                     movement: |transform| {
                         let mut new_transform = transform;
                         new_transform.translation.x += 7.5;
