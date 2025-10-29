@@ -1,4 +1,4 @@
-use crate::bullet::{Bullet, BulletTimer, BulletOwner};
+use crate::bullet::{Bullet, BulletTimer, BulletOwner, DamageCountdownTimer};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -142,6 +142,22 @@ pub fn shoot(
                     damage: 1,
                 },
             ));
+        }
+    }
+}
+
+pub fn damaged(
+    time: Res<Time>,
+    mut commands: Commands,
+    mut query: Query<(Entity, &mut Sprite, &mut DamageCountdownTimer), With<Player>>,
+) {
+    for (entity, mut sprite, mut damage_timer) in &mut query {
+        sprite.color = Color::srgba(1.0, 0.0, 0.0, 0.8);
+        damage_timer.tick(time.delta());
+        if damage_timer.just_finished() {
+            commands.entity(entity).remove::<DamageCountdownTimer>();
+            commands.entity(entity).remove::<AudioPlayer>();
+            sprite.color = Color::WHITE;
         }
     }
 }

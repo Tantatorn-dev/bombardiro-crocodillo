@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::bullet::{Bullet, BulletTimer, BulletOwner};
+use crate::bullet::{Bullet, BulletTimer, BulletOwner, DamageCountdownTimer};
 
 use crate::player::PlayerStatus;
 
@@ -13,9 +13,6 @@ pub struct MoveTimer(pub Timer);
 
 #[derive(Component, Deref, DerefMut)]
 pub struct AttackTimer(pub Timer);
-
-#[derive(Component, Deref, DerefMut)]
-pub struct DamageCountdownTimer(pub Timer);
 
 #[derive(Component)]
 pub struct EnemyHealth(pub u32);

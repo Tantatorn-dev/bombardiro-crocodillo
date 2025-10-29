@@ -20,6 +20,9 @@ pub enum BulletOwner {
 #[derive(Component, Deref, DerefMut)]
 pub struct BulletTimer(pub Timer);
 
+#[derive(Component, Deref, DerefMut)]
+pub struct DamageCountdownTimer(pub Timer);
+
 pub fn fly(
     time: Res<Time>,
     mut query: Query<(&mut BulletTimer, &mut Transform, &Bullet), With<Bullet>>,
@@ -75,7 +78,10 @@ pub fn collide(
 
                 commands
                     .entity(player_entity)
-                    .insert((AudioPlayer::new(asset_server.load("audio/fx/hit.ogg")),));
+                    .insert((
+                        DamageCountdownTimer(Timer::from_seconds(1.0, TimerMode::Once)),
+                        AudioPlayer::new(asset_server.load("audio/fx/hit.ogg")),
+                    ));
 
                 break;
             }

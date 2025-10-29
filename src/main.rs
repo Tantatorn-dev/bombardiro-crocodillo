@@ -33,6 +33,7 @@ fn main() {
                 enemy::animate,
                 enemy::damaged,
                 enemy::despawn,
+                player::damaged,
                 hud::update,
                 enemy::attack,
             ),
