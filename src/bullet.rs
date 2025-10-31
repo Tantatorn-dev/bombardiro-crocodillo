@@ -88,3 +88,14 @@ pub fn collide(
         }
     }
 }
+
+pub fn despawn(
+    mut commands: Commands,
+    mut query: Query<(Entity, &Transform), With<Bullet>>,
+) {
+    for (entity, transform) in &mut query {
+	if transform.translation.x > 900.0 || transform.translation.x < -900.0 {
+	    commands.entity(entity).despawn();
+	}
+    }
+}

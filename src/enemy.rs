@@ -73,15 +73,19 @@ pub fn damaged(
 
 pub fn despawn(
     mut commands: Commands,
-    mut query: Query<(Entity, &EnemyHealth), With<Enemy>>,
+    mut query: Query<(Entity, &EnemyHealth, &Transform), With<Enemy>>,
     mut player_query: Query<&mut PlayerStatus>,
 ) {
-    for (entity, health) in &mut query {
+    for (entity, health, transform) in &mut query {
         if health.0 == 0 {
             commands.entity(entity).despawn();
             if let Ok(mut player_status) = player_query.single_mut() {
                 player_status.score += 10;
             }
+        }
+
+        if transform.translation.x < -800.0 {
+            commands.entity(entity).despawn();
         }
     }
 }
