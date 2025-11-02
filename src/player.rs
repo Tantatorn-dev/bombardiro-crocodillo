@@ -1,4 +1,4 @@
-use crate::bullet::{Bullet, BulletTimer, BulletOwner, DamageCountdownTimer};
+use crate::{GameState, bullet::{Bullet, BulletOwner, BulletTimer, DamageCountdownTimer}};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -158,6 +158,17 @@ pub fn damaged(
             commands.entity(entity).remove::<DamageCountdownTimer>();
             commands.entity(entity).remove::<AudioPlayer>();
             sprite.color = Color::WHITE;
+        }
+    }
+}
+
+pub fn game_over(
+    mut query: Query<&PlayerStatus, With<Player>>,
+    mut game_state: ResMut<NextState<GameState>>,
+) {
+    for (player_status) in &mut query {
+        if player_status.health <= 0 {
+            game_state.set(GameState::GameOver);
         }
     }
 }
