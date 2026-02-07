@@ -1,4 +1,4 @@
-use crate::bullet::{Bullet, BulletDamage, BulletTimer};
+use crate::{GameState, PlayingEntity, bullet::{Bullet, BulletOwner, BulletTimer, DamageCountdownTimer}};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -60,6 +60,7 @@ pub fn setup(
             ammo: PlayerAmmo::Standard,
         },
         Player,
+        PlayingEntity,
     ));
 }
 
@@ -90,16 +91,16 @@ pub fn control(
     for mut transform in &mut query {
         let mut direction = Vec2::ZERO;
 
-        if keyboard_input.pressed(KeyCode::ArrowLeft) {
+        if keyboard_input.pressed(KeyCode::ArrowLeft) || keyboard_input.pressed(KeyCode::KeyA) {
             direction.x -= 1.0;
         }
-        if keyboard_input.pressed(KeyCode::ArrowRight) {
+        if keyboard_input.pressed(KeyCode::ArrowRight) || keyboard_input.pressed(KeyCode::KeyD) {
             direction.x += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::ArrowUp) {
+        if keyboard_input.pressed(KeyCode::ArrowUp) || keyboard_input.pressed(KeyCode::KeyW) {
             direction.y += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::ArrowDown) {
+        if keyboard_input.pressed(KeyCode::ArrowDown) || keyboard_input.pressed(KeyCode::KeyS) {
             direction.y -= 1.0;
         }
 
@@ -130,11 +131,46 @@ pub fn shoot(
             commands.spawn((
                 sprite,
                 bullet_transform,
-                BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
-                BulletDamage(1),
                 AudioPlayer::new(asset_server.load("audio/fx/blaster.ogg")),
-                Bullet,
+                BulletTimer(Timer::from_seconds(0.01, TimerMode::Repeating)),
+                Bullet {
+                    owner: BulletOwner::Player,
+                    movement: |transform| {
+                        let mut new_transform = transform;
+                        new_transform.translation.x += 7.5;
+                        new_transform
+                    },
+                    damage: 1,
+                },
+                PlayingEntity,
             ));
+        }
+    }
+}
+
+pub fn damaged(
+    time: Res<Time>,
+    mut commands: Commands,
+    mut query: Query<(Entity, &mut Sprite, &mut DamageCountdownTimer), With<Player>>,
+) {
+    for (entity, mut sprite, mut damage_timer) in &mut query {
+        sprite.color = Color::srgba(1.0, 0.0, 0.0, 0.8);
+        damage_timer.tick(time.delta());
+        if damage_timer.just_finished() {
+            commands.entity(entity).remove::<DamageCountdownTimer>();
+            commands.entity(entity).remove::<AudioPlayer>();
+            sprite.color = Color::WHITE;
+        }
+    }
+}
+
+pub fn game_over(
+    mut query: Query<&PlayerStatus, With<Player>>,
+    mut game_state: ResMut<NextState<GameState>>,
+) {
+    for (player_status) in &mut query {
+        if player_status.health <= 0 {
+            game_state.set(GameState::GameOver);
         }
     }
 }
