@@ -3,7 +3,7 @@ use rand::Rng;
 
 use crate::bullet::{Bullet, BulletTimer, BulletOwner, DamageCountdownTimer};
 
-use crate::player::PlayerStatus;
+use crate::{player::PlayerStatus, PlayingEntity};
 
 #[derive(Component)]
 pub struct Enemy;
@@ -37,6 +37,7 @@ pub fn spawn_enemy(
             EnemyHealth(5),
             OriginalPosition(position),
             Enemy,
+            PlayingEntity,
         ))
         .id()
 }
@@ -119,6 +120,7 @@ pub fn attack(
                             new_transform
                         },
                     },
+                    PlayingEntity,
                 ));
             }
         }

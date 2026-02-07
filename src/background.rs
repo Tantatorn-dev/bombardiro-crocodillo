@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::PlayingEntity;
 
 #[derive(Component, DerefMut, Deref)]
 pub struct BackgroundTimer(pub Timer);
@@ -15,35 +16,41 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Sprite::from_image(base_texture),
         Transform::from_xyz(0., 0., -4.).with_scale(Vec3::splat(2.3)),
+        PlayingEntity,
     ));
 
     commands.spawn((
         Sprite::from_image(moon_texture),
         Transform::from_xyz(0., 0., -3.).with_scale(Vec3::splat(2.3)),
+        PlayingEntity,
     ));
 
     commands.spawn((
         Sprite::from_image(cloud_texture_1.clone()),
         Transform::from_xyz(0., 0., -2.).with_scale(Vec3::splat(2.3)),
         BackgroundTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        PlayingEntity,
     ));
 
     commands.spawn((
         Sprite::from_image(cloud_texture_1.clone()),
         Transform::from_xyz(1300., 0., -2.).with_scale(Vec3::splat(2.3)),
         BackgroundTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        PlayingEntity,
     ));
 
     commands.spawn((
         Sprite::from_image(cloud_texture_2.clone()),
         Transform::from_xyz(0., 0., -1.).with_scale(Vec3::splat(2.3)),
         BackgroundTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        PlayingEntity,
     ));
 
     commands.spawn((
         Sprite::from_image(cloud_texture_2.clone()),
         Transform::from_xyz(1300., 0., -1.).with_scale(Vec3::splat(2.3)),
         BackgroundTimer(Timer::from_seconds(0.05, TimerMode::Repeating)),
+        PlayingEntity,
     ));
 }
 

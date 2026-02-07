@@ -1,4 +1,4 @@
-use crate::{GameState, bullet::{Bullet, BulletOwner, BulletTimer, DamageCountdownTimer}};
+use crate::{GameState, PlayingEntity, bullet::{Bullet, BulletOwner, BulletTimer, DamageCountdownTimer}};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -60,6 +60,7 @@ pub fn setup(
             ammo: PlayerAmmo::Standard,
         },
         Player,
+        PlayingEntity,
     ));
 }
 
@@ -141,6 +142,7 @@ pub fn shoot(
                     },
                     damage: 1,
                 },
+                PlayingEntity,
             ));
         }
     }

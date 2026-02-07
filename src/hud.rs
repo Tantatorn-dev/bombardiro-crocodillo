@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::player::PlayerStatus;
+use crate::{player::PlayerStatus, PlayingEntity};
 
 #[derive(Component)]
 pub struct Hud;
@@ -15,6 +15,7 @@ pub fn setup(mut commands: Commands) {
             ..default()
         },
         Hud,
+        PlayingEntity,
     ));
 }
 

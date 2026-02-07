@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use rand::Rng;
-use crate::enemy::spawn_enemy;
+use crate::{enemy::spawn_enemy, PlayingEntity};
 
 #[derive(Component, Deref, DerefMut)]
 pub struct SpawnTimer(pub Timer);
@@ -8,6 +8,7 @@ pub struct SpawnTimer(pub Timer);
 pub fn setup(mut commands: Commands) {
     commands.spawn((
         SpawnTimer(Timer::from_seconds(2.0, TimerMode::Repeating)),
+        PlayingEntity,
     ));
 }
 
